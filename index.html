@@ -1501,6 +1501,39 @@
             suggestionsBox.style.display = 'none';
         }
     }
+    
+    // --- 検索ロジック (ここが変更点) ---
+    function handleSearch(pid) {
+        const input = document.getElementById(`${pid}-search`);
+        const suggestionsBox = document.getElementById(`${pid}-suggestions`);
+        const rawQuery = input.value.trim();
+
+        if (rawQuery.length < 1) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+
+        // 入力された文字も「ひらがな」に統一する
+        // これにより、「ガブ」と打っても「がぶ」と打っても同じになる
+        const query = toHiragana(rawQuery);
+
+        // 検索キー(ひらがな化済みデータ)に対して検索をかける
+        const matched = POKE_DB.filter(p => p.searchKey.includes(query)).slice(0, 8);
+
+        suggestionsBox.innerHTML = '';
+        if (matched.length > 0) {
+            suggestionsBox.style.display = 'block';
+            matched.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerText = p.displayName;
+                div.onclick = () => selectPokemon(pid, p);
+                suggestionsBox.appendChild(div);
+            });
+        } else {
+            suggestionsBox.style.display = 'none';
+        }
+    }
 
     // --- アプリケーションロジック ---
     const STATS = ['h', 'a', 'b', 'c', 'd', 's'];
