@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ステータス計算機 SV</title>
+    <title>ポケモンステータス計算機 SV</title>
     <style>
         :root {
             --primary: #ff5252;
@@ -20,14 +20,14 @@
             color: var(--text);
             margin: 0;
             padding: 10px;
-            padding-bottom: 100px;
+            padding-bottom: 150px;
         }
-        .container { max-width: 600px; margin: 0 auto; }
+        .container { max-width: 650px; margin: 0 auto; }
         
         .card {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 15px;
+            padding: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-bottom: 20px;
         }
@@ -38,7 +38,6 @@
         .search-box { display: flex; gap: 8px; margin-bottom: 10px; position: relative; }
         .search-box input { flex: 1; text-align: left; }
         
-        /* サジェストリストのデザイン */
         .suggestions {
             position: absolute; top: 100%; left: 0; right: 0;
             background: #fff; border: 1px solid #ddd; border-radius: 0 0 8px 8px;
@@ -67,15 +66,16 @@
 
         /* 入力共通 */
         input {
-            padding: 6px; font-size: 0.9rem; border: 1px solid var(--border);
-            border-radius: 6px; background: #fff; text-align: center; width: 100%; box-sizing: border-box;
+            padding: 4px; font-size: 0.9rem; border: 1px solid var(--border);
+            border-radius: 4px; background: #fff; text-align: center; width: 100%; box-sizing: border-box;
         }
         input:focus { border-color: var(--primary); outline: none; }
 
         /* グリッドレイアウト */
         .grid-header, .stat-row {
             display: grid;
-            grid-template-columns: 0.7fr 1fr 1fr 2.4fr 1.2fr 1.1fr;
+            /* Label | Base | IV | EV-Control | Nature | Result-Control */
+            grid-template-columns: 20px 35px 35px 2.2fr 30px 1.4fr;
             gap: 4px; align-items: center;
         }
         .grid-header { font-size: 0.65rem; color: #888; text-align: center; margin-bottom: 5px; }
@@ -85,22 +85,43 @@
         /* 努力値コントロール */
         .ev-area { display: flex; align-items: center; gap: 2px; }
         .btn-mini {
-            font-size: 0.6rem; padding: 4px 0; width: 26px; height: 26px;
+            font-size: 0.6rem; padding: 0; width: 24px; height: 26px;
             border: 1px solid #ddd; border-radius: 4px; background: #f0f0f0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
         .btn-mini:active { background: #ddd; }
 
         /* 性格補正 */
-        .nature-toggles { display: flex; gap: 2px; justify-content: center; }
+        .nature-toggles { display: flex; gap: 2px; justify-content: center; flex-direction: column; }
         .btn-nature {
-            width: 22px; height: 22px; font-size: 0.7rem; font-weight: bold;
-            border: 1px solid #eee; border-radius: 4px; background: #fff; color: #ccc;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            width: 100%; height: 14px; font-size: 0.6rem; font-weight: bold;
+            border: 1px solid #eee; border-radius: 2px; background: #fff; color: #ccc;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 1px;
         }
         .btn-nature.active-plus { background: var(--boost-plus); color: white; border-color: var(--boost-plus); }
         .btn-nature.active-minus { background: var(--boost-minus); color: white; border-color: var(--boost-minus); }
 
-        .result-val { font-weight: bold; font-size: 1rem; text-align: center; }
+        /* 実数値コントロールエリア */
+        .res-area { display: flex; align-items: center; gap: 2px; justify-content: center;}
+        
+        .result-val { 
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--text);
+            background: #fff;
+            width: 45px;
+            /* type=numberのスピナーを消す設定は推奨されますが、今回は標準のままにします */
+        }
+        /* フォーカス時の色味 */
+        .result-val:focus { background: #fafffa; border-color: var(--primary); }
+
+        .btn-res {
+            width: 20px; height: 26px; border: 1px solid #ddd; background: #fff;
+            border-radius: 4px; cursor: pointer; color: #666; font-size: 0.8rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-res:active { background: #f0f0f0; }
+
         .total-bar { text-align: right; font-size: 0.75rem; color: #666; margin-top: 5px; }
         .text-alert { color: #ff5252; font-weight: bold; }
 
@@ -115,7 +136,7 @@
 
 <script>
     // ==========================================
-    //  ここにCSVの中身を貼り付ける
+    //  ここにCSVの中身を貼り付けてください (ヘッダー含む)
     // ==========================================
     const CSV_TEXT = `図鑑No,名前（日本語）,フォルム名（日本語）,タイプ1,タイプ2,HP,攻撃,防御,特攻,特防,素早さ,特性1,特性2,夢特性
 1,フシギダネ,通常,くさ,どく,45,49,49,65,65,45,しんりょく,,ようりょくそ
@@ -1421,9 +1442,7 @@
 1024,テラパゴス,ステラフォルム,ノーマル,,160,105,110,130,110,85,ゼロフォーミング,,
 1025,モモワロウ,通常,どく,ゴースト,88,88,160,88,88,88,どくくぐつ,,`;
 
-    // ↑ 上記はサンプルです。実際の全データをここに上書きしてください。
-// --- 便利な変換関数 ---
-    // カタカナをひらがなに変換する関数
+    // --- 便利な変換関数 ---
     function toHiragana(str) {
         return str.replace(/[\u30a1-\u30f6]/g, function(match) {
             var chr = match.charCodeAt(0) - 0x60;
@@ -1443,19 +1462,14 @@
             const id = row[0];
             const name = row[1];
             const form = row[2];
-            
-            // 表示用: "リザードン (メガリザードンX)"
             const displayName = (form === '通常' || !form) ? name : `${name} (${form})`;
-            
-            // ★検索用: 表示名をすべてひらがなに変換して保持しておく
-            // 例: "リザードン" → "りざーどん"
             const searchKey = toHiragana(displayName);
 
             POKE_DB.push({
                 id: id,
                 name: name,
                 displayName: displayName,
-                searchKey: searchKey, // これを使って検索する
+                searchKey: searchKey,
                 types: [row[3], row[4]].filter(t => t),
                 stats: {
                     h: parseInt(row[5]),
@@ -1469,7 +1483,7 @@
         }
     }
 
-    // --- 検索ロジック (ここが変更点) ---
+    // --- 検索ロジック ---
     function handleSearch(pid) {
         const input = document.getElementById(`${pid}-search`);
         const suggestionsBox = document.getElementById(`${pid}-suggestions`);
@@ -1480,45 +1494,9 @@
             return;
         }
 
-        // 入力された文字も「ひらがな」に統一する
-        // これにより、「ガブ」と打っても「がぶ」と打っても同じになる
         const query = toHiragana(rawQuery);
-
-        // 検索キー(ひらがな化済みデータ)に対して検索をかける
-        const matched = POKE_DB.filter(p => p.searchKey.includes(query)).slice(0, 8);
-
-        suggestionsBox.innerHTML = '';
-        if (matched.length > 0) {
-            suggestionsBox.style.display = 'block';
-            matched.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.innerText = p.displayName;
-                div.onclick = () => selectPokemon(pid, p);
-                suggestionsBox.appendChild(div);
-            });
-        } else {
-            suggestionsBox.style.display = 'none';
-        }
-    }
-    
-    // --- 検索ロジック (ここが変更点) ---
-    function handleSearch(pid) {
-        const input = document.getElementById(`${pid}-search`);
-        const suggestionsBox = document.getElementById(`${pid}-suggestions`);
-        const rawQuery = input.value.trim();
-
-        if (rawQuery.length < 1) {
-            suggestionsBox.style.display = 'none';
-            return;
-        }
-
-        // 入力された文字も「ひらがな」に統一する
-        // これにより、「ガブ」と打っても「がぶ」と打っても同じになる
-        const query = toHiragana(rawQuery);
-
-        // 検索キー(ひらがな化済みデータ)に対して検索をかける
-        const matched = POKE_DB.filter(p => p.searchKey.includes(query)).slice(0, 8);
+        // 先頭一致
+        const matched = POKE_DB.filter(p => p.searchKey.startsWith(query)).slice(0, 8); 
 
         suggestionsBox.innerHTML = '';
         if (matched.length > 0) {
@@ -1556,7 +1534,7 @@
             <h2>${title}</h2>
             
             <div class="search-box">
-                <input type="text" id="${id}-search" placeholder="名前で検索 (例: ガブ)" oninput="handleSearch('${id}')" autocomplete="off">
+                <input type="text" id="${id}-search" placeholder="名前で検索 (例: がぶ)" oninput="handleSearch('${id}')" autocomplete="off">
                 <div id="${id}-suggestions" class="suggestions"></div>
             </div>
 
@@ -1573,7 +1551,7 @@
             </div>
 
             <div class="grid-header">
-                <div></div><div>種族値</div><div>個体値</div><div>努力値(0/252)</div><div>性格補正</div><div>実数値</div>
+                <div></div><div>種族値</div><div>個体値</div><div>努力値 (0/252)</div><div>性格</div><div>実数値</div>
             </div>
 
             ${STATS.map(s => {
@@ -1598,7 +1576,11 @@
                     
                     ${natureHtml}
                     
-                    <div class="result-val" id="${id}-res-${s}">0</div>
+                    <div class="res-area">
+                        <button class="btn-res" onclick="adjustRealValueByDelta('${id}', '${s}', -1)">&lt;</button>
+                        <input type="number" class="result-val" id="${id}-res-${s}" value="0" onchange="updateEvFromRes('${id}', '${s}')">
+                        <button class="btn-res" onclick="adjustRealValueByDelta('${id}', '${s}', 1)">&gt;</button>
+                    </div>
                 </div>`;
             }).join('')}
 
@@ -1609,61 +1591,21 @@
         </div>`;
     }
 
-    // HTML流し込み
     document.getElementById('p1-wrapper').innerHTML = createCard('p1', 'ポケモン 1');
     document.getElementById('p2-wrapper').innerHTML = createCard('p2', 'ポケモン 2');
     
-    // CSVパース実行
     parseCSV();
-    // 初期計算
     calc('p1');
     calc('p2');
 
+    // --- 各種操作関数 ---
 
-    // --- 検索ロジック (インクリメンタルサーチ) ---
-    function handleSearch(pid) {
-        const input = document.getElementById(`${pid}-search`);
-        const suggestionsBox = document.getElementById(`${pid}-suggestions`);
-        const query = input.value.trim();
-
-        if (query.length < 1) {
-            suggestionsBox.style.display = 'none';
-            return;
-        }
-
-        // CSVデータから検索 (部分一致)
-        const matched = POKE_DB.filter(p => p.displayName.includes(query)).slice(0, 8); // 最大8件表示
-
-        suggestionsBox.innerHTML = '';
-        if (matched.length > 0) {
-            suggestionsBox.style.display = 'block';
-            matched.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.innerText = p.displayName;
-                div.onclick = () => selectPokemon(pid, p);
-                suggestionsBox.appendChild(div);
-            });
-        } else {
-            suggestionsBox.style.display = 'none';
-        }
-    }
-
-    // ポケモン選択時の処理
     function selectPokemon(pid, data) {
-        document.getElementById(`${pid}-search`).value = ''; // 入力をクリア
+        document.getElementById(`${pid}-search`).value = '';
         document.getElementById(`${pid}-suggestions`).style.display = 'none';
-
-        // 1. 情報表示
         document.getElementById(`${pid}-info`).style.display = 'flex';
         document.getElementById(`${pid}-name`).innerText = data.displayName;
-        
-        // 画像 (IDを使ってPokeAPIの画像サーバーから取得)
-        // ※フォルム違いもIDが同じ場合、基本の画像になります
-        document.getElementById(`${pid}-img`).src = 
-            `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`;
-
-        // タイプ表示
+        document.getElementById(`${pid}-img`).src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${data.id}.png`;
         const typeContainer = document.getElementById(`${pid}-types`);
         typeContainer.innerHTML = '';
         data.types.forEach(t => {
@@ -1673,16 +1615,10 @@
             badge.style.backgroundColor = TYPE_COLORS[t] || '#999';
             typeContainer.appendChild(badge);
         });
-
-        // 2. 種族値セット (CSVの値を使用)
-        STATS.forEach(s => {
-            document.getElementById(`${pid}-base-${s}`).value = data.stats[s];
-        });
-
+        STATS.forEach(s => document.getElementById(`${pid}-base-${s}`).value = data.stats[s]);
         calc(pid);
     }
 
-    // --- 計算・努力値・性格処理 (変更なし) ---
     function toggleNature(id, stat, type) {
         const current = state[id];
         if (type === 'up') {
@@ -1721,26 +1657,82 @@
         calc(id);
     }
 
-    function calc(id) {
+    // ★新機能: 実数値を直接入力した時の処理
+    function updateEvFromRes(id, stat) {
+        const inputVal = parseInt(document.getElementById(`${id}-res-${stat}`).value);
+        if (isNaN(inputVal)) {
+            calc(id); // 不正値なら元に戻す
+            return;
+        }
+        
+        // その実数値になる最小のEVを探す
+        const foundEv = findMinEvForTarget(id, stat, inputVal);
+
+        if (foundEv !== -1) {
+            document.getElementById(`${id}-ev-${stat}`).value = foundEv;
+        }
+        // 再計算して整合性を取る（無理な値なら元の値に戻る）
+        calc(id);
+    }
+
+    // ★ボタン操作用ラッパー
+    function adjustRealValueByDelta(id, stat, delta) {
+        const currentVal = parseInt(document.getElementById(`${id}-res-${stat}`).value) || 0;
+        const targetVal = currentVal + delta;
+        
+        const foundEv = findMinEvForTarget(id, stat, targetVal);
+
+        if (foundEv !== -1) {
+            document.getElementById(`${id}-ev-${stat}`).value = foundEv;
+            calc(id);
+        }
+    }
+
+    // ★共通ロジック: 目標実数値になる最小のEVを探す (0〜252)
+    function findMinEvForTarget(id, stat, targetVal) {
+        // 許容される努力値上限チェック
+        let otherEvSum = 0;
+        STATS.forEach(s => {
+            if(s !== stat) otherEvSum += (parseInt(document.getElementById(`${id}-ev-${s}`).value) || 0);
+        });
+        const maxAllowedEv = 510 - otherEvSum;
+
+        // 0から順に探すことで「最小の努力値」を見つける
+        for (let ev = 0; ev <= 252; ev++) {
+            if (ev > maxAllowedEv) break;
+            
+            const val = calcSingleStat(id, stat, ev);
+            if (val === targetVal) {
+                return ev; // 見つかった時点で終了
+            }
+        }
+        return -1; // 見つからなかった（実現不可能）
+    }
+
+    function calcSingleStat(id, s, evOverride) {
         const level = parseInt(document.getElementById(`${id}-level`).value) || 50;
+        const base = parseInt(document.getElementById(`${id}-base-${s}`).value) || 0;
+        const iv = parseInt(document.getElementById(`${id}-iv-${s}`).value) || 0;
+        const ev = (evOverride !== undefined) ? evOverride : (parseInt(document.getElementById(`${id}-ev-${s}`).value) || 0);
+        
+        if (s === 'h') {
+            if (base === 1) return 1;
+            return Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
+        } else {
+            let natureMult = 1.0;
+            if (state[id].natureUp === s) natureMult = 1.1;
+            if (state[id].natureDown === s) natureMult = 0.9;
+            return Math.floor((Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + 5) * natureMult);
+        }
+    }
+
+    function calc(id) {
         let totalEv = 0;
         STATS.forEach(s => {
-            const base = parseInt(document.getElementById(`${id}-base-${s}`).value) || 0;
-            const iv = parseInt(document.getElementById(`${id}-iv-${s}`).value) || 0;
             const ev = parseInt(document.getElementById(`${id}-ev-${s}`).value) || 0;
             totalEv += ev;
-
-            let val = 0;
-            if (s === 'h') {
-                if (base === 1) val = 1;
-                else val = Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
-            } else {
-                let natureMult = 1.0;
-                if (state[id].natureUp === s) natureMult = 1.1;
-                if (state[id].natureDown === s) natureMult = 0.9;
-                val = Math.floor((Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + 5) * natureMult);
-            }
-            document.getElementById(`${id}-res-${s}`).innerText = val;
+            const val = calcSingleStat(id, s);
+            document.getElementById(`${id}-res-${s}`).value = val; 
         });
         const totalEl = document.getElementById(`${id}-total`);
         totalEl.innerText = totalEv;
