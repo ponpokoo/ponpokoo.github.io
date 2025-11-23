@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン計算機 (CSV版)</title>
+    <title>ステータス計算機 SV</title>
     <style>
         :root {
             --primary: #ff5252;
@@ -115,7 +115,7 @@
 
 <script>
     // ==========================================
-    //  ここにCSVの中身を貼り付けてください (ヘッダー含む)
+    //  ここにCSVの中身を貼り付ける
     // ==========================================
     const CSV_TEXT = `図鑑No,名前（日本語）,フォルム名（日本語）,タイプ1,タイプ2,HP,攻撃,防御,特攻,特防,素早さ,特性1,特性2,夢特性
 1,フシギダネ,通常,くさ,どく,45,49,49,65,65,45,しんりょく,,ようりょくそ
@@ -1422,14 +1422,20 @@
 1025,モモワロウ,通常,どく,ゴースト,88,88,160,88,88,88,どくくぐつ,,`;
 
     // ↑ 上記はサンプルです。実際の全データをここに上書きしてください。
+// --- 便利な変換関数 ---
+    // カタカナをひらがなに変換する関数
+    function toHiragana(str) {
+        return str.replace(/[\u30a1-\u30f6]/g, function(match) {
+            var chr = match.charCodeAt(0) - 0x60;
+            return String.fromCharCode(chr);
+        });
+    }
 
-    
     // --- データ処理 ---
     let POKE_DB = [];
 
     function parseCSV() {
         const lines = CSV_TEXT.trim().split('\n');
-        // 1行目はヘッダーなのでスキップ (i=1から開始)
         for (let i = 1; i < lines.length; i++) {
             const row = lines[i].replace('\r', '').split(',');
             if (row.length < 10) continue;
@@ -1438,14 +1444,19 @@
             const name = row[1];
             const form = row[2];
             
-            // 表示名を作成 (通常なら名前だけ、それ以外はフォーム名を付記)
+            // 表示用: "リザードン (メガリザードンX)"
             const displayName = (form === '通常' || !form) ? name : `${name} (${form})`;
+            
+            // ★検索用: 表示名をすべてひらがなに変換して保持しておく
+            // 例: "リザードン" → "りざーどん"
+            const searchKey = toHiragana(displayName);
 
             POKE_DB.push({
                 id: id,
                 name: name,
                 displayName: displayName,
-                types: [row[3], row[4]].filter(t => t), // タイプ
+                searchKey: searchKey, // これを使って検索する
+                types: [row[3], row[4]].filter(t => t),
                 stats: {
                     h: parseInt(row[5]),
                     a: parseInt(row[6]),
@@ -1455,6 +1466,39 @@
                     s: parseInt(row[10])
                 }
             });
+        }
+    }
+
+    // --- 検索ロジック (ここが変更点) ---
+    function handleSearch(pid) {
+        const input = document.getElementById(`${pid}-search`);
+        const suggestionsBox = document.getElementById(`${pid}-suggestions`);
+        const rawQuery = input.value.trim();
+
+        if (rawQuery.length < 1) {
+            suggestionsBox.style.display = 'none';
+            return;
+        }
+
+        // 入力された文字も「ひらがな」に統一する
+        // これにより、「ガブ」と打っても「がぶ」と打っても同じになる
+        const query = toHiragana(rawQuery);
+
+        // 検索キー(ひらがな化済みデータ)に対して検索をかける
+        const matched = POKE_DB.filter(p => p.searchKey.includes(query)).slice(0, 8);
+
+        suggestionsBox.innerHTML = '';
+        if (matched.length > 0) {
+            suggestionsBox.style.display = 'block';
+            matched.forEach(p => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerText = p.displayName;
+                div.onclick = () => selectPokemon(pid, p);
+                suggestionsBox.appendChild(div);
+            });
+        } else {
+            suggestionsBox.style.display = 'none';
         }
     }
 
