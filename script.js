@@ -1334,7 +1334,7 @@ function createCard(id, title) {
                 <div class="ev-area">
                     <input type="number" id="${id}-ev-${s}" value="0" step="4" oninput="calc('${id}')">
                     <button class="btn-mini" onclick="setEv('${id}', '${s}', 0)">0</button>
-                    <button class="btn-mini" onclick="setEv('${id}', '${s}', 252)">極</button>
+                    <button class="btn-mini" onclick="setEv('${id}', '${s}', 252)">252</button>
                 </div>
                 ${natureHtml}
                 <div class="res-area">
