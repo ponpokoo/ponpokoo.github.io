@@ -19,6 +19,22 @@ body {
 }
 .container { max-width: 650px; margin: 0 auto; }
 
+/* PC・タブレット向け横並び設定 */
+@media screen and (min-width: 800px) {
+    .container {
+        max-width: 1200px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 20px;
+    }
+    #p1-wrapper, #p2-wrapper {
+        flex: 1;
+        width: 0;
+        min-width: 400px;
+    }
+}
+
 .card {
     background: var(--card-bg);
     border-radius: 12px;
@@ -38,9 +54,7 @@ h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #444; border-bottom: 1px soli
     max-height: 200px; overflow-y: auto; z-index: 100;
     display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-.suggestion-item {
-    padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem;
-}
+.suggestion-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 0.9rem; }
 .suggestion-item:hover { background: #f0f8ff; }
 
 .poke-info {
@@ -57,9 +71,7 @@ h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #444; border-bottom: 1px soli
     font-size: 0.7rem; color: #fff; background: #999; margin-right: 4px;
 }
 
-.level-row {
-    display: flex; align-items: flex-end; gap: 10px; margin-bottom: 8px; font-size: 0.8rem;
-}
+.level-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; }
 
 .btn-mega {
     width: 40px; height: 35px;
@@ -69,23 +81,34 @@ h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #444; border-bottom: 1px soli
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s;
 }
-.btn-mega.active {
-    background-color: var(--mega-text); color: white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+.btn-mega.active { background-color: var(--mega-text); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 .btn-mega:active { transform: scale(0.95); }
 
 input {
-    padding: 4px; font-size: 0.9rem; border: 1px solid var(--border);
+    padding: 4px 2px; /* 左右のパディングを少し減らす */
+    font-size: 0.9rem; border: 1px solid var(--border);
     border-radius: 4px; background: #fff; text-align: center; width: 100%; box-sizing: border-box;
 }
 input:focus { border-color: var(--primary); outline: none; }
 
+/*入力欄のスピナー(▲▼)を消してスペースを確保 --- */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 .grid-header, .stat-row {
     display: grid;
-    grid-template-columns: 20px 35px 35px 2.2fr 30px 1.4fr;
+    /* 元: 20px 35px 35px ... */
+    /* 新: 25px 50px 45px ... (種族値と個体値の幅を拡張) */
+    grid-template-columns: 25px 50px 45px 2.2fr 30px 1.4fr;
     gap: 4px; align-items: center;
 }
+
 .grid-header { font-size: 0.65rem; color: #888; text-align: center; margin-bottom: 5px; }
 .stat-row { margin-bottom: 6px; border-bottom: 1px solid #f9f9f9; padding-bottom: 6px; }
 .stat-label { font-weight: bold; font-size: 0.8rem; text-align: center; }
@@ -109,7 +132,7 @@ input:focus { border-color: var(--primary); outline: none; }
 
 .res-area { display: flex; align-items: center; gap: 2px; justify-content: center;}
 .result-val { 
-    font-weight: bold; font-size: 1.1rem; color: var(--text); background: #fff; width: 45px;
+    font-weight: bold; font-size: 1.1rem; color: var(--text); background: #fff; width: 100%;
 }
 .result-val:focus { background: #fafffa; border-color: var(--primary); }
 .btn-res {
