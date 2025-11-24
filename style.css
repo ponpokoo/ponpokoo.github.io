@@ -104,8 +104,7 @@ input[type=number] {
 .grid-header, .stat-row {
     display: grid;
     /* 元: 20px 35px 35px ... */
-    /* 新: 25px 50px 45px ... (種族値と個体値の幅を拡張) */
-    grid-template-columns: 25px 50px 45px 2.2fr 30px 1.4fr;
+    grid-template-columns: 25px 40px 35px 1.7fr 30px 1.4fr;
     gap: 4px; align-items: center;
 }
 
