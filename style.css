@@ -90,14 +90,14 @@ input {
     border-radius: 4px; background: #fff; text-align: center; width: 100%; box-sizing: border-box;
 }
 input:focus { border-color: var(--primary); outline: none; }
-
-/*入力欄のスピナー(▲▼)を消してスペースを確保 --- */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+ 
+/*種族値の欄(IDに -base- がある)だけスピナーを消す --- */
+input[id*="-base-"]::-webkit-outer-spin-button,
+input[id*="-base-"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-input[type=number] {
+input[id*="-base-"][type=number] {
   -moz-appearance: textfield;
 }
 
