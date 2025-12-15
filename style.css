@@ -16,6 +16,7 @@ body {
     margin: 0;
     padding: 10px;
     padding-bottom: 150px;
+    touch-action: manipulation;
 }
 .container { max-width: 650px; margin: 0 auto; }
 
@@ -33,6 +34,13 @@ body {
         width: 0;
         min-width: 400px;
     }
+}
+
+/* スマホ表示時のみフォントサイズを16px以上にする */
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
 }
 
 .card {
@@ -74,7 +82,7 @@ h2 { margin: 0 0 10px 0; font-size: 1.1rem; color: #444; border-bottom: 1px soli
 .level-row { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 8px; font-size: 0.8rem; }
 
 .btn-mega {
-    width: 40px; height: 35px;
+    width: 70px; height: 35px;
     background-color: var(--mega-bg); color: var(--mega-text);
     border: 1px solid #d1c4e9; border-radius: 4px;
     font-weight: bold; font-size: 0.8rem; cursor: pointer;
