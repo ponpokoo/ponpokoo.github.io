@@ -20,29 +20,6 @@ body {
 }
 .container { max-width: 650px; margin: 0 auto; }
 
-/* PC・タブレット向け横並び設定 */
-@media screen and (min-width: 800px) {
-    .container {
-        max-width: 1200px;
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-        padding: 20px;
-    }
-    #p1-wrapper, #p2-wrapper {
-        flex: 1;
-        width: 0;
-        min-width: 400px;
-    }
-}
-
-/* スマホ表示時のみフォントサイズを16px以上にする */
-@media screen and (max-width: 768px) {
-  input, textarea, select {
-    font-size: 16px;
-  }
-}
-
 .card {
     background: var(--card-bg);
     border-radius: 12px;
@@ -107,6 +84,7 @@ input[id*="-base-"]::-webkit-inner-spin-button {
 }
 input[id*="-base-"][type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .grid-header, .stat-row {
@@ -122,7 +100,7 @@ input[id*="-base-"][type=number] {
 
 .ev-area { display: flex; align-items: center; gap: 2px; }
 .btn-mini {
-    font-size: 0.6rem; padding: 0; width: 24px; height: 26px;
+    font-size: 0.8rem; padding: 0; width: 26px; height: 28px;
     border: 1px solid #ddd; border-radius: 4px; background: #f0f0f0; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
 }
@@ -130,7 +108,7 @@ input[id*="-base-"][type=number] {
 
 .nature-toggles { display: flex; gap: 2px; justify-content: center; flex-direction: column; }
 .btn-nature {
-    width: 100%; height: 16px; font-size: 0.8rem; font-weight: bold;
+    width: 100%; height: 16px; font-size: 1rem; font-weight: bold;
     border: 1px solid #eee; border-radius: 2px; background: #fff; color: #ccc;
     display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 1px;
 }
@@ -143,10 +121,32 @@ input[id*="-base-"][type=number] {
 }
 .result-val:focus { background: #fafffa; border-color: var(--primary); }
 .btn-res {
-    width: 20px; height: 26px; border: 1px solid #ddd; background: #fff;
+    width: 30px; height: 26px; border: 1px solid #ddd; background: #fff;
     border-radius: 4px; cursor: pointer; color: #666; font-size: 0.8rem;
     display: flex; align-items: center; justify-content: center;
 }
 .btn-res:active { background: #f0f0f0; }
 .total-bar { text-align: right; font-size: 0.75rem; color: #666; margin-top: 5px; }
 .text-alert { color: #ff5252; font-weight: bold; }
+
+/* PC・タブレット向け横並び設定 */
+@media screen and (min-width: 800px) {
+    .container {
+        max-width: 1200px;
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 20px;
+    }
+    #p1-wrapper, #p2-wrapper {
+        flex: 1;
+        width: 0;
+        min-width: 400px;
+    }
+}
+/* スマホ表示時のみフォントサイズを16px以上にする */
+@media screen and (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px;
+  }
+}
