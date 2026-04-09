@@ -112,7 +112,7 @@ input[id*="-base-"][type=number] {
 .grid-header, .stat-row {
     display: grid;
     /* 元: 20px 35px 35px ... */
-    grid-template-columns: 25px 40px 35px 1.7fr 30px 1.4fr;
+    grid-template-columns: 25px 40px 35px 1fr 35px 1fr;
     gap: 4px; align-items: center;
 }
 
@@ -130,7 +130,7 @@ input[id*="-base-"][type=number] {
 
 .nature-toggles { display: flex; gap: 2px; justify-content: center; flex-direction: column; }
 .btn-nature {
-    width: 100%; height: 14px; font-size: 0.6rem; font-weight: bold;
+    width: 100%; height: 16px; font-size: 0.8rem; font-weight: bold;
     border: 1px solid #eee; border-radius: 2px; background: #fff; color: #ccc;
     display: flex; align-items: center; justify-content: center; cursor: pointer; margin-bottom: 1px;
 }
